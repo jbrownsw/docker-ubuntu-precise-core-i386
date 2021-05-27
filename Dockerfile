@@ -7,7 +7,7 @@ ADD ubuntu-precise-core-cloudimg-i386-root.tar.gz /
 # command
 ENTRYPOINT ["/usr/bin/linux32", "--"]
 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null
+#RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null
 
 # a few minor docker-specific tweaks
 # see https://github.com/docker/docker/blob/master/contrib/mkimage/debootstrap
@@ -30,7 +30,8 @@ RUN echo '#!/bin/sh' > /usr/sbin/policy-rc.d \
 	&& echo 'Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";' > /etc/apt/apt.conf.d/docker-gzip-indexes
 
 # enable the universe
-RUN sed -i 's/^#\s*\(deb.*universe\)$/\1/g' /etc/apt/sources.list
+RUN sed -i 's/^#\s*\(deb.*universe\)$/\1/g; s/archive.ubuntu/old-releases.ubuntu/g' /etc/apt/sources.list
+RUN apt-get update; apt-get install -y sudo
 
 # overwrite this with 'CMD []' in a dependent Dockerfile
 CMD ["/bin/bash"]
