@@ -35,6 +35,7 @@ RUN echo '#!/bin/sh' > /usr/sbin/policy-rc.d \
 RUN sed -i 's/^#\s*\(deb.*universe\)$/\1/g; s/archive.ubuntu/old-releases.ubuntu/g' /etc/apt/sources.list
 RUN apt-get update; apt-get install -y sudo
 RUN useradd -m -u 1000 ${USER}; usermod -aG sudo ${USER}; echo "${USER}:${PASS}" | chpasswd
+RUN echo "${USER} ALL=(ALL) NOPASSWD: ALL" | tee -a /etc/sudoers
 
 # overwrite this with 'CMD []' in a dependent Dockerfile
 CMD ["/bin/bash"]
