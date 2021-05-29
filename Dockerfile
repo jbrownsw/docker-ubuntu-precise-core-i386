@@ -1,5 +1,7 @@
 FROM scratch
 MAINTAINER Yi Ou <https://github.com/ouyi>
+ARG USER
+ARG PASS
 ADD ubuntu-precise-core-cloudimg-i386-root.tar.gz /
 
 # docker doesn't officially support 32bit. to make "uname -m" work (which is
@@ -32,6 +34,7 @@ RUN echo '#!/bin/sh' > /usr/sbin/policy-rc.d \
 # enable the universe
 RUN sed -i 's/^#\s*\(deb.*universe\)$/\1/g; s/archive.ubuntu/old-releases.ubuntu/g' /etc/apt/sources.list
 RUN apt-get update; apt-get install -y sudo
+RUN useradd -m -u 1000 ${USER}; usermod -aG sudo ${USER}; echo "${USER}:${PASS}" | chpasswd
 
 # overwrite this with 'CMD []' in a dependent Dockerfile
 CMD ["/bin/bash"]
